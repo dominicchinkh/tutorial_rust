@@ -6,13 +6,13 @@ fn main() {
     // Vector
     //--------
 
-    let _v: Vec<i32> = Vec::new();
+    let v: Vec<i32> = Vec::new();
 
     //----------
 
     // If you create a Vec<T> with initial values, and Rust will infer the type of 
     // value you want to store
-    let _v = vec![1, 2, 3];
+    let v = vec![1, 2, 3];
 
     //----------
 
@@ -69,7 +69,6 @@ fn main() {
     //---------------------------------------
     // Using an Enum to Store Multiple Types
 
-    #[allow(dead_code)]
     enum SpreadsheetCell {
         Int(i32),
         Float(f64),
@@ -79,7 +78,7 @@ fn main() {
     // Rust needs to know what types will be in the vector at compile time so that it 
     // knows exactly how much memory on the heap will be needed to store each element
 
-    let _row = vec![
+    let row = vec![
         SpreadsheetCell::Int(3),
         SpreadsheetCell::Text(String::from("blue")),
         SpreadsheetCell::Float(10.12),
@@ -95,12 +94,12 @@ fn main() {
     // If we have some initial data with which we want to start the string, we use the 
     // `to_string` method,
     let data = "initial contents";
-    let _s = data.to_string();
+    let s = data.to_string();
 
-    let _s = "initial contents".to_string();
+    let s = "initial contents".to_string();
 
     // We can use the function `String::from` to create a String from a string literal
-    let _s = String::from("initial contents");
+    let s = String::from("initial contents");
 
     //-------------------
     // Updating a string
@@ -343,7 +342,6 @@ struct Company {
     departments: HashMap<String, Vec<String>>,
 }
 
-#[allow(dead_code)]
 impl Company {
 
     // The `Self` keywords in the return type and in the body of the function are aliases for the type that appears

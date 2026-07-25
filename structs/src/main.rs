@@ -59,7 +59,7 @@ fn main() {
     //----------------------------------------------
     // Creating Instances with Struct Update Syntax
 
-    let _user2 = User {
+    let user2 = User {
         email: String::from("another@example.com"),
         ..user1
     };
@@ -82,7 +82,7 @@ fn main() {
     println!("{0} {1} {2}", {black.0}, {black.1}, {black.2});
 
     // Unlike tuples, tuple structs require you to name the type of the struct when you destructure them
-    let Color(_r, _g, _b) = black;
+    let Color(r, g, b) = black;
 
     //-------------------
     // Unit-Like Structs
@@ -91,7 +91,7 @@ fn main() {
     // that you want to store in the type itself
 
     struct AlwaysEqual;
-    let _subject = AlwaysEqual;
+    let subject = AlwaysEqual;
 
     //---------
     // Example
@@ -146,7 +146,7 @@ fn main() {
     println!("Can rect1 hold rect2? {}", rect1.can_hold(&rect2));
     println!("Can rect1 hold rect3? {}", rect1.can_hold(&rect3));
 
-    let _rect4 = Rectangle::square(30);
+    let rect4 = Rectangle::square(30);
 }
 
 fn build_user(email: String, username: String) -> User {

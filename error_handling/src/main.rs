@@ -28,7 +28,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     /*
     let greeting_file_result = File::open("hello.txt");
 
-    let _greeting_file = match greeting_file_result {
+    let greeting_file = match greeting_file_result {
         Ok(file) => file,
         Err(error) => match error.kind() {
             ErrorKind::NotFound => match File::create("hello.txt") {
@@ -44,7 +44,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // Another cleaner alternative:
 
-    let _greeting_file = File::open("hello.txt").unwrap_or_else(|error| {
+    let greeting_file = File::open("hello.txt").unwrap_or_else(|error| {
         if error.kind() == ErrorKind::NotFound {
             File::create("hello.txt").unwrap_or_else(|error| {
                 panic!("Problem creating the file: {error:?}");
@@ -59,17 +59,17 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // If the Result value is the `Ok` variant, unwrap will return the value inside the `Ok`. 
     // If the Result is the `Err` variant, unwrap will call the `panic!` macro
-    let _greeting_file = File::open("hello.txt").unwrap();
+    let greeting_file = File::open("hello.txt").unwrap();
 
     // Similar to `wrap`, except the `expect` method lets us also choose the `panic!` error
     // message
-    let _greeting_file = File::open("hello.txt")
+    let greeting_file = File::open("hello.txt")
                             .expect("hello.txt should be included in this project");
 
     //--------------------
     // Propagating Errors
 
-    let _greeting_file = File::open("hello.txt")?;
+    let greeting_file = File::open("hello.txt")?;
 
     Ok(())
 }   

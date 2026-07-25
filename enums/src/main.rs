@@ -1,4 +1,3 @@
-#[allow(dead_code)]
 enum IpAddr {
     // You can put any kind of data inside an enum variant: strings, numeric types, or structs, for example. You 
     // can even include another enum
@@ -6,7 +5,6 @@ enum IpAddr {
     V6(String),
 }
 
-#[allow(dead_code)]
 enum Message {
     Quit,
     Move { x: i32, y: i32 }, // Note: Has named fields
@@ -35,7 +33,6 @@ impl Message {
 }
 
 #[derive(Debug)]
-#[allow(dead_code)]
 enum UsState {
     Alabama,
     Alaska
@@ -50,7 +47,6 @@ impl UsState {
     }
 }
 
-#[allow(dead_code)]
 enum Coin {
     Penny,
     Nickel,
@@ -59,8 +55,8 @@ enum Coin {
 }
 
 fn main() {
-    let _home = IpAddr::V4(127, 0, 0, 1);
-    let _loopback = IpAddr::V6(String::from("::1"));
+    let home = IpAddr::V4(127, 0, 0, 1);
+    let loopback = IpAddr::V6(String::from("::1"));
 
     let m = Message::Write(String::from("hello"));
     m.call();
@@ -71,16 +67,16 @@ fn main() {
     // Rust can infer these types because we’ve specified a value inside the `Some` variant. For `absent_number`, 
     // Rust requires us to annotate the overall Option type
 
-    let _some_number = Some(5);
-    let _some_char = Some('e');
+    let some_number = Some(5);
+    let some_char = Some('e');
 
-    let _absent_number: Option<i32> = None;
+    let absent_number: Option<i32> = None;
 
     //------------------------------
     // Patterns That Bind to Values
 
     // When a Coin::Quarter matches, the `state` variable will bind to the value of that quarter’s `state`
-    let _coin = value_in_cents(Coin::Quarter(UsState::Alaska));
+    let coin = value_in_cents(Coin::Quarter(UsState::Alaska));
 
     //-----------------------------
     // The Option<T> match Pattern
@@ -127,19 +123,19 @@ fn main() {
         println!("The maximum is configured to be {max}");
     }
 
-    let mut _count = 0;
+    let mut count = 0;
     let coin = Coin::Quarter(UsState::Alaska);
 
     // Same as:
     //     match coin {
     //         Coin::Quarter(state) => println!("State quarter from {state:?}!"),
-    //         _ => _count += 1,
+    //         _ => count += 1,
     //     }
 
     if let Coin::Quarter(ref state) = coin {
         println!("State quarter from {state:?}!");
     } else {
-        _count += 1;
+        count += 1;
     }
 
     //------------

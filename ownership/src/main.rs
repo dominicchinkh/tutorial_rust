@@ -10,7 +10,7 @@ fn main() {
     //----------------
     // Variable scope
     {                       // `s` is not valid here, since it's not yet declared
-        let _s = "hello";   // `s` is valid from this point forward
+        let s = "hello";   // `s` is valid from this point forward
 
         // do stuff with s
     }                       // This scope is now over, and s is no longer valid
@@ -21,7 +21,7 @@ fn main() {
     // To ensure memory safety, after the line let s2 = s1;, Rust considers s1 as 
     // no longer valid
     let s1 = String::from("hello");
-    let _s2 = s1;
+    let s2 = s1;
 
     // ❌ `s1` is no longer valid
     // println!("{s1}, world!");
@@ -71,12 +71,12 @@ fn main() {
     //-------------------------
     // Return Values and Scope
 
-    let _s1 = gives_ownership();        // gives_ownership moves its return
+    let s1 = gives_ownership();        // gives_ownership moves its return
                                         // value into `s1`
 
     let s2 = String::from("hello");     // `s2` comes into scope
 
-    let _s3 = takes_and_gives_back(s2); // `s2` is moved into
+    let s3 = takes_and_gives_back(s2); // `s2` is moved into
                                         // takes_and_gives_back, which also
                                         // moves its return value into `s3`
 
@@ -98,29 +98,29 @@ fn main() {
     //--------------------------------
     let mut s = String::from("hello");
 
-    let _r1 = &mut s;
+    let r1 = &mut s;
 
     // ❌ If you have a mutable reference to a value, you can have no other references 
     //     to that value
-    // let _r2 = &mut s;
+    // let r2 = &mut s;
     // println!("{_r1}, {_r2}");
 
     //--------------------------------
     {
-        let _r1 = &mut s;
+        let r1 = &mut s;
     } // r1 goes out of scope here, so we can make a new reference with no problems.
 
-    let _r2 = &mut s;
+    let r2 = &mut s;
 
     //--------------------------------
-    let mut _s = String::from("hello");
+    let mut s = String::from("hello");
 
-    let _r1 = &s; // no problem
-    let _r2 = &s; // no problem
+    let r1 = &s; // no problem
+    let r2 = &s; // no problem
 
     // ❌ We also cannot have a mutable reference while we have an immutable one to the 
     //     same value.
-    // let _r3 = &mut s;
+    // let r3 = &mut s;
     // println!("{_r1}, {_r2}, and {_r3}");
 
     //--------------------------------
@@ -143,8 +143,8 @@ fn main() {
 
     let s = String::from("hello world");
 
-    let _hello = &s[0..5];
-    let _world = &s[6..11];
+    let hello = &s[0..5];
+    let world = &s[6..11];
 
     // These are equal:
 
@@ -173,14 +173,14 @@ fn main() {
     // The type of `s` here is `&str`: It’s a slice pointing to that specific point of the 
     // binary. This is also why string literals are immutable; `&str` is an immutable 
     // reference.
-    let _s = "Hello, world!";
+    let s = "Hello, world!";
 
     //--------------------------------
 
     let a = [1, 2, 3, 4, 5];
 
     // This slice has the type &[i32]
-    let _slice = &a[1..3];
+    let slice = &a[1..3];
 }
 
 fn takes_ownership(some_string: String) { // some_string comes into scope

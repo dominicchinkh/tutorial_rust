@@ -1,6 +1,5 @@
 mod front_of_house;
 
-#[allow(dead_code)]
 mod back_of_house;
 
 //--------------------------------
@@ -15,7 +14,6 @@ mod back_of_house;
 use crate::front_of_house::hosting;
 
 // Note that `use` only creates the shortcut for the particular scope in which the use occurs
-#[allow(dead_code)]
 mod customer {
     pub fn eat_at_restaurant() {
         // ❌ The `eat_at_restaurant` function is in a new child module named `customer`, which is then a different scope 
