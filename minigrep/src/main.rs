@@ -12,13 +12,31 @@ pub struct Config {
 }
 
 impl Config {
-    fn build(args: &[String]) -> Result<Config, &'static str> {
-        if args.len() < 3 {
-            return Err("not enough arguments");
-        }
+    
+    // 'static: 
+    //    Denote that the affected reference can live for the entire duration of 
+    //    the program
 
-        let query = args[1].clone();
-        let file_path = args[2].clone();
+    fn build(
+
+        // `args` can be any type that implements the Iterator trait and returns 
+        // String items
+
+        mut args: impl Iterator<Item = String>,
+    ) -> Result<Config, &'static str> {
+
+        // We want to ignore the name of the program and get to the next value
+        args.next();
+
+        let query = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Didn't get a query string"),
+        };
+
+        let file_path = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Didn't get a file path"),
+        };
 
         let ignore_case = env::var("IGNORE_CASE").is_ok();
 
@@ -31,9 +49,11 @@ impl Config {
 }
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
 
-    let config = Config::build(&args).unwrap_or_else(|err| {
+    // The env::args function returns an iterator of type `std::env::Args`, and 
+    // that type implements the Iterator trait and returns String values
+
+    let config = Config::build(env::args()).unwrap_or_else(|err| {
         eprintln!("Problem parsing arguments: {err}");
         process::exit(1);
     });
