@@ -1,0 +1,19 @@
+[package]
+name = "cargo"
+version = "0.1.0"
+edition = "2024"
+description = "A demo program for cargo and crates.io"
+license = "MIT OR Apache-2.0"
+
+[workspace]
+resolver = "3"
+members = ["add_one","adder"]
+
+[dependencies]
+rand = "0.8.5"
+
+[profile.dev]
+opt-level = 0
+
+[profile.release]
+opt-level = 3
