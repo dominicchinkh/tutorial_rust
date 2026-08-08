@@ -1,4 +1,4 @@
- use std::fmt::Display;
+use std::fmt::Display;
 
 // You can use as many generic type parameters in a definition as you want, but using more 
 // than a few makes your code hard to read
@@ -123,6 +123,13 @@ impl<'a> ImportantExcerpt<'a> {
 
     // Because of the first elision rule, we’re not required to annotate the lifetime of the 
     // reference to `self`
+
+    // The first lifetime elision rule in Rust states: "Each parameter that is a reference gets 
+    // its own lifetime parameter."
+
+    // When the Rust compiler parses a function or method signature, it automatically assigns a 
+    // distinct, unique lifetime to every input variable that is a reference
+
     fn level(&self) -> i32 {
         3
     }
@@ -131,6 +138,7 @@ impl<'a> ImportantExcerpt<'a> {
     //    their own lifetimes. 
     // 2. Then, because one of the parameters is `&self`, the return type gets the lifetime of 
     //    `&self`
+    
     fn announce_and_return_part(&self, announcement: &str) -> &str {
         println!("Attention please: {announcement}");
         self.part
