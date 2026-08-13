@@ -1,6 +1,6 @@
 enum IpAddr {
-    // You can put any kind of data inside an enum variant: strings, numeric types, or structs, for example. You 
-    // can even include another enum
+    // You can put any kind of data inside an enum variant: strings, numeric types, or 
+    // structs, for example. You can even include another enum
     V4(u8, u8, u8, u8),
     V6(String),
 }
@@ -64,18 +64,21 @@ fn main() {
     //-------------
     // Option enum
 
-    // Rust can infer these types because we’ve specified a value inside the `Some` variant. For `absent_number`, 
-    // Rust requires us to annotate the overall Option type
+    // Rust can infer these types because we’ve specified a value inside the `Some` variant 
 
     let some_number = Some(5);
     let some_char = Some('e');
+
+    // For `absent_number`, Rust requires us to annotate the overall Option type
 
     let absent_number: Option<i32> = None;
 
     //------------------------------
     // Patterns That Bind to Values
 
-    // When a Coin::Quarter matches, the `state` variable will bind to the value of that quarter’s `state`
+    // When a Coin::Quarter matches, the `state` variable will bind to the value of that 
+    // quarter’s `state`
+    
     let coin = value_in_cents(Coin::Quarter(UsState::Alaska));
 
     //-----------------------------

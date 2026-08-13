@@ -21,6 +21,14 @@ impl Guess {
     }
 }
 
+/*
+ *  In Rust, dyn is short for dynamic (as in dynamic dispatch).
+ *
+ *  It signals that you are using a trait object—meaning the exact underlying concrete 
+ *  type isn't known at compile time, but will be determined at runtime
+ *
+ */
+
 // `main` can also return a `Result<(), E>`
 // `Box<dyn Error>` type is a trait object
 fn main() -> Result<(), Box<dyn Error>> {
