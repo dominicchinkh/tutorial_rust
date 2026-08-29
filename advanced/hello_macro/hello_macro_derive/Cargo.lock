@@ -3,18 +3,6 @@
 version = 4
 
 [[package]]
-name = "advanced"
-version = "0.1.0"
-dependencies = [
- "hello_macro",
- "hello_macro_derive",
-]
-
-[[package]]
-name = "hello_macro"
-version = "0.1.0"
-
-[[package]]
 name = "hello_macro_derive"
 version = "0.1.0"
 dependencies = [
