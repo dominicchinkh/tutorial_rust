@@ -170,7 +170,7 @@ impl fmt::Display for Point {
 
 // We’re only allowed to implement a trait on a type if either the trait or the type, 
 // or both, are local to our crate. It’s possible to get around this restriction using 
-// the newtype pattern, which involves creating a new type in a tuple struct
+// the new type pattern, which involves creating a new type in a tuple struct
 
 // Let’s say we want to implement Display on Vec<T>, which the orphan rule prevents us 
 // from doing directly because the Display trait and the Vec<T> type are defined outside 
@@ -730,6 +730,19 @@ unsafe fn add_to_count(inc: u32) {
         // that data access from different threads is done safely
 
         COUNTER += inc;
+    }
+}
+
+// This function is safe and correct. We check that the index is in bounds, and if it is, 
+// index into the array in an unchecked manner
+
+fn index(idx: usize, arr: &[u8]) -> Option<u8> {
+    if idx < arr.len() {
+        unsafe {
+            Some(*arr.get_unchecked(idx))
+        }
+    } else {
+        None
     }
 }
 
