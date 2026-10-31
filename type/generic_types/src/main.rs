@@ -1,4 +1,6 @@
+use std::cell::RefCell;
 use std::fmt::Display;
+use std::marker;
 
 // You can use as many generic type parameters in a definition as you want, but using more 
 // than a few makes your code hard to read
@@ -145,6 +147,27 @@ impl<'a> ImportantExcerpt<'a> {
     }
 }
 
+//--------------------------------
+// Higher-Rank Trait Bound (HRTB)
+
+// for<'a> can be read as “for all choices of 'a”, and basically produces an infinite list of 
+// trait bounds that F must satisfy
+
+struct Closure<F> {
+    data: (u8, u16),
+    func: F,
+}
+
+impl<F> Closure<F>
+    where for<'a> F: Fn(&'a (u8, u16)) -> &'a u8,
+{
+    fn call(&self) -> &u8 {
+        (self.func)(&self.data)
+    }
+}
+
+fn do_it(data: &(u8, u16)) -> &u8 { &data.0 }
+
 fn main() {
 
     //--------------------
@@ -251,6 +274,95 @@ fn main() {
     // 3. If there are multiple input lifetime parameters, but one of them is `&self` or 
     //    `&mut self` because this is a method, the lifetime of `self` is assigned to all output 
     //    lifetime parameters
+
+    //-------------------------
+    // Higher-Rank Trait Bound
+
+    let clo = Closure { data: (0, 1), func: do_it };
+    println!("{}", clo.call());
+
+    //---------
+    // Subtype
+
+    let hello: &'static str = "hello";
+    {
+        let world = String::from("world");
+        let world = &world;     // 'world has a shorter lifetime than 'static
+        debug(hello, world);    // hello silently downgrades from `&'static str` into `&'world str`
+    }
+
+    //----------
+    // Variance
+
+    {
+        let mut hello: &'static str = "hello";
+        {
+            let world = String::from("world");
+
+            // ❌ We cannot assume &'static str can still be downgraded into &'world str
+            // to satisfy T, once it’s behind a &mut reference. This means that &mut &'static str 
+            // cannot be a subtype of &mut &'world str, even if 'static is a subtype of 'world
+
+            // assign(&mut hello, &world);
+        }
+        println!("{hello}"); // use after free 😿
+    }
+
+    {
+        let hello: &'static str = "hello";
+        
+        demo("hello", store); // "hello" is 'static. Can call `store` fine
+
+        {
+            let smuggle = String::from("smuggle");
+
+            // ❌ `&smuggle` is not static. If we were to call `store` with `&smuggle`,
+            // we would have pushed an invalid lifetime into the `STATIC_VECTOR`.
+            // Therefore, `fn(&'static str)` cannot be a subtype of `fn(&'a str)`
+
+            // `store` cannot accept a string reference that lives for any duration less 
+            // than 'static
+
+            // demo(&smuggle, store);
+        }
+
+        // use after free 😿
+        STATIC_VECTOR.with_borrow(|v| println!("{v:?}"));
+    }
+
+    //------------
+    // Drop check
+
+    // For a generic type to soundly implement drop, its generics arguments must 
+    // strictly outlive it
+
+    {
+        let mut world = World {
+            inspector: None,
+            days: Box::new(1),
+        };
+        world.inspector = Some(Inspector(&world.days));
+
+        // Let's say `days` happens to get dropped first.
+        // Then when Inspector is dropped, it will try to read free'd memory!
+    }
+
+    //------------------
+    // Splitting borrow
+
+    // The borrow checker (a.k.a. borrowck) does understand structs sufficiently to 
+    // know that it’s possible to borrow disjoint fields of a struct simultaneously
+
+    {
+        let mut x = Foo {a: 0, b: 0, c: 0};
+        let a = &mut x.a;
+        let b = &mut x.b;
+        let c = &x.c;
+        *b += 1;
+        let c2 = &x.c;
+        *a += 10;
+        println!("{} {} {} {}", a, b, c, c2);
+    }
 }
 
 fn largest<T: std::cmp::PartialOrd>(list: &[T]) -> &T {
@@ -330,3 +442,62 @@ fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
 // fn longest<'a>(x: &'a str, y: &str) -> &'a str {
 //     x
 // }
+
+fn debug<'a>(a: &'a str, b: &'a str) {
+    println!("a = {a:?} b = {b:?}");
+}
+
+fn assign<T>(input: &mut T, val: T) {
+    *input = val;
+}
+
+// thread_local! defines a static variable that is instantiated per OS thread, rather than being 
+// shared across the entire program
+thread_local! {
+    pub static STATIC_VECTOR: RefCell<Vec<&'static str>> = RefCell::new(Vec::new());
+}
+
+/// Save the input given into a thread local `Vec<&'static str>`
+fn store(input: &'static str) {
+    STATIC_VECTOR.with_borrow_mut(|v| v.push(input));
+}
+
+/// Call the function with it's input (must have the same lifetime!)
+fn demo<'a>(input: &'a str, f: fn(&'a str)) {
+    f(input);
+}
+
+struct Inspector<'a>(&'a u8);
+
+// ❌ If we add a destructor, the program will no longer compile!
+
+// impl<'a> Drop for Inspector<'a> {
+//     fn drop(&mut self) {
+//         println!("I was only {} days from retirement!", self.0);
+//     }
+// }
+
+struct World<'a> {
+    inspector: Option<Inspector<'a>>,
+    days: Box<u8>,
+}
+
+// 'a is unused within the struct’s body, it’s unbounded. Because of the troubles 
+// this has historically caused, unbounded lifetimes and types are forbidden in 
+// struct definitions. Therefore we must somehow refer to these types in the body. 
+// Correctly doing this is necessary to have correct variance and drop checking
+
+// We do this using PhantomData, which is a special marker type. PhantomData consumes
+// no space, but simulates a field of the given type for the purpose of static analysis
+
+struct Iter<'a, T: 'a> {
+    ptr: *const T,
+    end: *const T,
+    _marker: marker::PhantomData<&'a T>,
+}
+
+struct Foo {
+    a: i32,
+    b: i32,
+    c: i32,
+}
