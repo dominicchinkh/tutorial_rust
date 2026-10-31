@@ -10,7 +10,7 @@ fn main() {
     //----------------
     // Variable scope
     {                       // `s` is not valid here, since it's not yet declared
-        let s = "hello";   // `s` is valid from this point forward
+        let s = "hello";    // `s` is valid from this point forward
 
         // do stuff with s
     }                       // This scope is now over, and s is no longer valid
