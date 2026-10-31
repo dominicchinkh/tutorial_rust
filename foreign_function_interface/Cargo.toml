@@ -1,0 +1,12 @@
+[package]
+name = "foreign_function_interface"
+version = "0.1.0"
+edition = "2024"
+build = "build.rs"
+
+[dependencies]
+libc = "0.2.0"
+
+# To compile Rust code as a shared library that can be called from C
+[lib]
+crate-type = ["cdylib"]
