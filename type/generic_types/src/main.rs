@@ -176,22 +176,25 @@ fn main() {
 
     //---------------------
     // Function definition
+    {
+        let number_list = vec![34, 50, 25, 100, 65];
 
-    let number_list = vec![34, 50, 25, 100, 65];
+        let result = largest(&number_list);
+        println!("The largest number is {result}");
 
-    let result = largest(&number_list);
-    println!("The largest number is {result}");
+        let char_list = vec!['y', 'm', 'a', 'q'];
 
-    let char_list = vec!['y', 'm', 'a', 'q'];
-
-    let result = largest(&char_list);
-    println!("The largest char is {result}");
+        let result = largest(&char_list);
+        println!("The largest char is {result}");
+    }
 
     //---------------------
     // Struct definition
 
-    let integer = Point { x: 5,   y: 10.7 };
-    let float   = Point { x: 1.0, y: 4.0 };
+    {
+        let integer = Point { x: 5,   y: 10.7 };
+        let float   = Point { x: 1.0, y: 4.0 };
+    }
 
     //-----------------
     // Enum definition
@@ -209,86 +212,98 @@ fn main() {
     //-------------------
     // Method definition
 
-    let p1 = Point { x: 5, y: 10.4 };
-    let p2 = Point { x: "Hello", y: 'c' };
+    {
+        let p1 = Point { x: 5, y: 10.4 };
+        let p2 = Point { x: "Hello", y: 'c' };
 
-    let p3 = p1.mixup(p2);
+        let p3 = p1.mixup(p2);
 
-    println!("p3.x = {}, p3.y = {}", p3.x, p3.y);
+        println!("p3.x = {}, p3.y = {}", p3.x, p3.y);
+    }
 
     //--------
     // Traits
     //--------
 
-    let post = SocialPost {
-        username: String::from("horse_ebooks"),
-        content: String::from(
-            "of course, as you probably already know, people",
-        ),
-        reply: false,
-        repost: false,
-    };
+    {
+        let post = SocialPost {
+            username: String::from("horse_ebooks"),
+            content: String::from(
+                "of course, as you probably already know, people",
+            ),
+            reply: false,
+            repost: false,
+        };
 
-    println!("1 new post: {}", post.summarize());
+        println!("1 new post: {}", post.summarize());
 
-    notify(&post);
+        notify(&post);
+    }
 
     //-----------
     // Lifetimes
     //-----------
 
-    // Lifetime Annotation Syntax
+    {
+        // Lifetime Annotation Syntax
 
-    // Annotations are meant to tell Rust how generic lifetime parameters of multiple 
-    // references relate to each other
+        // Annotations are meant to tell Rust how generic lifetime parameters of  
+        // multiple references relate to each other
 
-    // &i32        // a reference
-    // &'a i32     // a reference with an explicit lifetime
-    // &'a mut i32 // a mutable reference with an explicit lifetime
+        // &i32        // a reference
+        // &'a i32     // a reference with an explicit lifetime
+        // &'a mut i32 // a mutable reference with an explicit lifetime
 
-    let string1 = String::from("abcd");
-    let string2 = "xyz";
+        let string1 = String::from("abcd");
+        let string2 = "xyz";
 
-    let result = longest(string1.as_str(), string2);
-    println!("The longest string is {result}");
+        let result = longest(string1.as_str(), string2);
+        println!("The longest string is {result}");
 
-    // ❌ Attempting to use result after string2 has gone out of scope
+        // ❌ Attempting to use result after string2 has gone out of scope
 
-    // let string1 = String::from("long string is long");
-    // let result;
-    // {
-    //     let string2 = String::from("xyz");
-    //     result = longest(string1.as_str(), string2.as_str());
-    // }
-    // println!("The longest string is {result}");
+        // let string1 = String::from("long string is long");
+        // let result;
+        // {
+        //     let string2 = String::from("xyz");
+        //     result = longest(string1.as_str(), string2.as_str());
+        // }
+        // println!("The longest string is {result}");
+    }
 
     //------------------
     // Lifetime ellison
 
-    // The compiler uses three rules to figure out the lifetimes of the references when there
-    // aren’t explicit annotations.
-
-    // 1. The compiler assigns a lifetime parameter to each parameter that’s a reference
-    // 2. If there is exactly one input lifetime parameter, that lifetime is assigned to all 
-    //    output lifetime parameters
-    // 3. If there are multiple input lifetime parameters, but one of them is `&self` or 
-    //    `&mut self` because this is a method, the lifetime of `self` is assigned to all output 
-    //    lifetime parameters
+    /*
+     *  The compiler uses three rules to figure out the lifetimes of the references when there
+     *  aren’t explicit annotations.
+     *
+     *  1. The compiler assigns a lifetime parameter to each parameter that’s a reference
+     *  2. If there is exactly one input lifetime parameter, that lifetime is assigned to all 
+     *     output lifetime parameters
+     *  3. If there are multiple input lifetime parameters, but one of them is `&self` or 
+     *     `&mut self` because this is a method, the lifetime of `self` is assigned to all output 
+     *     lifetime parameters
+     */
 
     //-------------------------
     // Higher-Rank Trait Bound
 
-    let clo = Closure { data: (0, 1), func: do_it };
-    println!("{}", clo.call());
+    {
+        let clo = Closure { data: (0, 1), func: do_it };
+        println!("{}", clo.call());
+    }
 
     //---------
     // Subtype
 
-    let hello: &'static str = "hello";
     {
-        let world = String::from("world");
-        let world = &world;     // 'world has a shorter lifetime than 'static
-        debug(hello, world);    // hello silently downgrades from `&'static str` into `&'world str`
+        let hello: &'static str = "hello";
+        {
+            let world = String::from("world");
+            let world = &world;     // 'world has a shorter lifetime than 'static
+            debug(hello, world);    // hello silently downgrades from `&'static str` into `&'world str`
+        }
     }
 
     //----------
@@ -419,17 +434,19 @@ fn returns_summarizable() -> impl Summary {
     }
 }
 
-// We want the signature to express the following constraint: The returned reference will be 
-// valid as long as both of the parameters are valid. This is the relationship between 
-// lifetimes of the parameters and the return value. We’ll name the lifetime 'a and then add 
-// it to each reference
-
-// The borrow checker should reject any values that don’t adhere to these constraints
-
-// The generic lifetime 'a will get the concrete lifetime that is equal to the smaller of the
-// lifetimes of x and y. Because we’ve annotated the returned reference with the same lifetime
-// parameter 'a, the returned reference will also be valid for the length of the smaller of 
-// the lifetimes of x and y.
+/*
+ *  We want the signature to express the following constraint: The returned reference will be 
+ *  valid as long as both of the parameters are valid. This is the relationship between 
+ *  lifetimes of the parameters and the return value. We’ll name the lifetime 'a and then add 
+ *  it to each reference
+ *
+ *  The borrow checker should reject any values that don’t adhere to these constraints
+ *
+ *  The generic lifetime 'a will get the concrete lifetime that is equal to the smaller of the
+ *  lifetimes of x and y. Because we’ve annotated the returned reference with the same lifetime
+ *  parameter 'a, the returned reference will also be valid for the length of the smaller of 
+ *  the lifetimes of x and y.
+ */
 
 fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
     if x.len() > y.len() { x } else { y }
